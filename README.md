@@ -1,131 +1,129 @@
 # Strength Matrix
 
-A Next.js application for running behavioral and SWOT-style assessments, presenting interactive results, and generating downloadable PDF reports.  
-It includes UI flows for questionnaire input, result visualization, and API endpoints for contact and PDF-related integrations.
+A **Next.js** web app that guides users through a business **SWOT-style questionnaire** (strengths, weaknesses, opportunities, threats). Answers are visualized with charts, summarized in results, and can be exported to **PDF**. Optional **GoHighLevel (Lead Connector)** API routes support contact upsert, file upload, and submit-with-PDF workflows.
 
-## Project Overview
+## Overview
 
-This project is built with the Next.js App Router and React. It combines:
+The app provides a multi-step assessment experience: users complete structured questions, view **Results** with category-level insights, and generate downloadable reports. Server routes under `/api/ghl/*` can integrate with GoHighLevel when environment variables are configured.
 
-- Assessment screens and question flows
-- Result rendering with charts and progress UI
-- PDF generation/export utilities
-- API routes for contact upsert, submission, and file upload workflows
+## Tech stack
 
-## Tech Stack
+| Area | Choice |
+|------|--------|
+| Framework | [Next.js](https://nextjs.org/) 16 (App Router) |
+| UI | React 19, [MUI](https://mui.com/), [Emotion](https://emotion.sh/) |
+| Forms | [react-hook-form](https://react-hook-form.com/) |
+| Charts | [Chart.js](https://www.chartjs.org/) + [react-chartjs-2](https://react-chartjs-2.js.org/) |
+| PDF | [jsPDF](https://github.com/parallax/jsPDF), [jspdf-autotable](https://github.com/simonbengtsson/jsPDF-AutoTable), [html2canvas](https://html2canvas.hertzen.com/) |
+| HTTP | [axios](https://axios-http.com/) |
+| Notifications | [react-hot-toast](https://react-hot-toast.com/) |
 
-- Next.js
-- React
-- Material UI (MUI)
-- Chart.js + react-chartjs-2
-- jsPDF + jspdf-autotable + html2canvas
-- Axios
+Dev server runs on **port 3001** (`npm run dev`).
 
-## Code Structure
+## Project structure
 
 ```text
-Strengthmatrix/
-  src/
-    app/
-      layout.jsx                     # Root layout
-      page.jsx                       # Main entry page
-      HomeClient.jsx                 # Home client-side logic/UI
-      ClientBodyClass.jsx            # Body class management
-      swot/
-        page.jsx                     # SWOT page route
-        SwotClient.jsx               # SWOT route client logic
-      api/
-        ghl/
-          upsert-contact/route.js    # Contact upsert endpoint
-          submit-with-pdf/route.js   # Submit flow with PDF endpoint
-          contact-file-upload/route.js # Contact file upload endpoint
-
-    ui/
-      Questionnaire.jsx              # Question flow UI
-      Question.jsx                   # Individual question UI
-      Results.jsx                    # Results rendering
-      ProgressBar.jsx                # Progress indicator
-      handleDownloadPdf.jsx          # PDF download helper
-      data.js                        # UI data/config
-      questions.json                 # Question dataset
-      newSwot.css                    # SWOT-specific styles
-
-    views/
-      DiscPage.js                    # DISC view page
-      SwotPage.js                    # SWOT view page
-      NewSwotPage.js                 # New SWOT view
-      newpdf.js                      # PDF generation logic
-      newpdfBW.js                    # B/W PDF generation logic
-      swot.json                      # SWOT source data
-
-    Components/
-      Header.js                      # Header component
-      Footer.js                      # Footer component
-      Table.js                       # Table component
-
-    index.js                         # Legacy React entry (if used)
-    App.js                           # Legacy app shell (if used)
-    index.css / App.css / Swot.css   # Global and feature styles
-
-  public/
-    index.html
-    manifest.json
-    robots.txt
-
-  next.config.js
-  package.json
-  .env.example
+strengthmatrix/
+├── next.config.js
+├── package.json
+├── public/
+│   ├── index.html
+│   ├── manifest.json
+│   └── robots.txt
+└── src/
+    ├── app/                          # Next.js App Router
+    │   ├── layout.jsx
+    │   ├── page.jsx
+    │   ├── HomeClient.jsx
+    │   ├── ClientBodyClass.jsx
+    │   ├── swot/
+    │   │   ├── page.jsx
+    │   │   └── SwotClient.jsx
+    │   └── api/ghl/
+    │       ├── upsert-contact/route.js
+    │       ├── contact-file-upload/route.js
+    │       └── submit-with-pdf/route.js
+    ├── ui/                           # Questionnaire, results, PDF helpers
+    │   ├── Questionnaire.jsx
+    │   ├── Question.jsx
+    │   ├── Results.jsx
+    │   ├── ProgressBar.jsx
+    │   ├── handleDownloadPdf.jsx
+    │   ├── data.js
+    │   ├── questions.json
+    │   └── newSwot.css
+    ├── views/                        # View-specific pages and PDF builders
+    │   ├── SwotPage.js
+    │   ├── NewSwotPage.js
+    │   ├── DiscPage.js
+    │   ├── newpdf.js
+    │   ├── newpdfBW.js
+    │   └── swot.json
+    ├── Components/
+    │   ├── Header.js
+    │   ├── Footer.js
+    │   └── Table.js
+    ├── fonts/
+    ├── App.js                        # Legacy React entry flow
+    ├── index.js                      # Legacy React bootstrap
+    ├── App.css
+    ├── Swot.css
+    └── index.css
 ```
 
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
-- Node.js 18+ (recommended current LTS)
-- npm
+- **Node.js** (LTS recommended)
+- **npm**
 
-### Installation
+### Install and run
 
 ```bash
 npm install
-```
-
-### Run in Development
-
-```bash
 npm run dev
 ```
 
-The app runs on [http://localhost:3001](http://localhost:3001).
+Open [http://localhost:3001](http://localhost:3001).
 
-### Build for Production
+### Production build
 
 ```bash
 npm run build
-```
-
-### Start Production Server
-
-```bash
 npm run start
 ```
 
-## Environment Variables
+`start` also serves on port **3001**.
 
-Copy `.env.example` to `.env` and fill required values:
+## Environment variables (GoHighLevel)
 
-```bash
-cp .env.example .env
-```
-
-On Windows PowerShell:
+Create `.env` from `.env.example` in the project root:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-## Notes
+These power the `/api/ghl/*` routes; UI flows can run without them unless those routes are called.
 
-- The repo currently includes both App Router (`src/app`) and legacy React-style files (`src/App.js`, `src/index.js`).  
-  The active Next.js route system is under `src/app`.
-- Keep secrets in `.env` only; do not commit sensitive values.
+| Variable | Purpose |
+|----------|---------|
+| `GHL_PRIVATE_INTEGRATION_TOKEN` | Private integration token for Lead Connector API |
+| `GHL_LOCATION_ID` | Sub-account / location ID |
+| `GHL_API_BASE_URL` | Optional base URL (defaults to `https://services.leadconnectorhq.com`) |
+| `GHL_FILE_UPLOAD_CUSTOM_FIELD_ID` | Custom field ID used while uploading/attaching file metadata |
+| `GHL_WORKFLOW_WEBHOOK_URL` | Optional webhook URL used in submit-with-PDF flow |
+
+Never commit real tokens or secrets.
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Development server on port 3001 (`next dev -p 3001 --webpack`) |
+| `npm run build` | Production build |
+| `npm run start` | Production server on port 3001 |
+
+## License and assets
+
+Font files under `src/fonts/` include their own license files (for example OFL / SIL). Follow those license terms when redistributing assets.
