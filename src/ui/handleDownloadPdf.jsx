@@ -2,6 +2,28 @@
 import { jsPDF } from "jspdf";
 import logo from "./logo-white.png";
 
+const getEstTimestampForFileName = () => {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).formatToParts(new Date());
+
+  const get = (type) => parts.find((part) => part.type === type)?.value || "";
+  const month = get("month");
+  const day = get("day");
+  const year = get("year");
+  const hour = get("hour");
+  const minute = get("minute");
+  const dayPeriod = get("dayPeriod").toUpperCase();
+
+  return `${month}-${day}-${year}_${hour}-${minute}-${dayPeriod}_EST`;
+};
+
 const handleDownloadPdf = (
   strengthsList,
   weaknessesList,
@@ -360,7 +382,8 @@ const addSwotSection = (title, list, color) => {
   addFooter(doc);
 
   // Save the PDF
-  doc.save("SWOT_Analysis_Results.pdf");
+  const timestamp = getEstTimestampForFileName();
+  doc.save(`SWOT_Analysis_Results_${timestamp}.pdf`);
 };
 
 export default handleDownloadPdf;
