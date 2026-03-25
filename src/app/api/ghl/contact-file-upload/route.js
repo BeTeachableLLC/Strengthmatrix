@@ -15,10 +15,32 @@ function sanitizeFilePart(value, fallback = "user") {
   return cleaned || fallback;
 }
 
+function getEstTimestampForFileName() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).formatToParts(new Date());
+
+  const get = (type) => parts.find((part) => part.type === type)?.value || "";
+  const month = get("month");
+  const day = get("day");
+  const year = get("year");
+  const hour = get("hour");
+  const minute = get("minute");
+  const dayPeriod = get("dayPeriod").toUpperCase();
+
+  return `${month}-${day}-${year}_${hour}-${minute}-${dayPeriod}_EST`;
+}
+
 function buildTimestampedPdfName(originalName = "result.pdf", username = "user") {
   const safeBase = String(originalName || "result.pdf").replace(/\.[^/.]+$/, "");
   const safeUser = sanitizeFilePart(username, "user");
-  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const stamp = getEstTimestampForFileName();
   return `${safeUser}-${safeBase}-${stamp}.pdf`;
 }
 

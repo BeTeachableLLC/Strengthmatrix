@@ -2,6 +2,28 @@
 import { jsPDF } from "jspdf";
 import logo from "./logo.png";
 
+const getEstTimestampForFileName = () => {
+    const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+    }).formatToParts(new Date());
+
+    const get = (type) => parts.find((part) => part.type === type)?.value || "";
+    const month = get("month");
+    const day = get("day");
+    const year = get("year");
+    const hour = get("hour");
+    const minute = get("minute");
+    const dayPeriod = get("dayPeriod").toUpperCase();
+
+    return `${month}-${day}-${year}_${hour}-${minute}-${dayPeriod}_EST`;
+};
+
 const newpdf = (
     userDetails,
     feedback, identity,
@@ -314,7 +336,12 @@ const newpdf = (
     addFeedbackSection(feedbackData);
 
     addFooter();
-    const fileName = `${safeName} Strengths-Matrix Result.pdf`;
+    const cleanedName = String(safeName)
+        .trim()
+        .replace(/\s+/g, " ")
+        .replace(/[<>:"/\\|?*\x00-\x1F]/g, "");
+    const timestamp = getEstTimestampForFileName();
+    const fileName = `${cleanedName} Strengths-Matrix Result ${timestamp}.pdf`;
     if (options?.returnFile) {
         const blob = doc.output("blob");
         return new File([blob], fileName, { type: "application/pdf" });
