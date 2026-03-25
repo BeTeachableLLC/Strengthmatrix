@@ -1,0 +1,28 @@
+{
+  "name": "strengthmatrix-next",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -p 3001 --webpack",
+    "build": "next build",
+    "start": "next start -p 3001"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.1",
+    "@mui/material": "^6.1.1",
+    "axios": "^1.8.4",
+    "chart.js": "^4.4.4",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
+    "next": "^16.2.0",
+    "react": "^19.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.53.0",
+    "react-hot-toast": "^2.6.0",
+    "react-to-print": "^3.0.2"
+  }
+}
