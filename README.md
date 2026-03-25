@@ -9,7 +9,7 @@ This project is built with the Next.js App Router and React. It combines:
 
 - Assessment screens and question flows
 - Result rendering with charts and progress UI
-- PDF generation/export utilities
+- PDF generation/export utilities.
 - API routes for contact upsert, submission, and file upload workflows
 
 ## Tech Stack
