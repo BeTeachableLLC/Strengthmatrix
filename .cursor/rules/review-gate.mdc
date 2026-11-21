@@ -1,0 +1,50 @@
+---
+description: Three-LLM review gate, tiers, risk lenses, and usage routing (MOE APPROVED 2026-11-20).
+alwaysApply: true
+---
+
+# Review gate
+
+**Gate 0, CI:** required checks green before any reviewer runs; the author adds a test for every threat-model line it claims is handled.
+
+**LLM 1, Author:** composer-2.5 (server/SSM work stays with Grok after Moe's named full SHA).
+
+**LLM 2, Reviewer A:** composer-2.5 in a fresh blind task.
+
+**LLM 3, Reviewer B:** grok-4.7-medium in a fresh blind task.
+
+Reviewers see only the diff, the threat model and the risk lenses; the author's chat never reviews; never use grok-4.7-high or cursor-grok-4.6-medium as a review seat.
+
+Composer is Author and Reviewer A only; Reviewer B is grok-4.7-medium only (second model family).
+
+## Risk lenses
+
+1. Can it run twice or race
+2. Any migration on a non-empty table, and a rollback
+3. Any error, timeout or missing value that fails open
+4. Money or usage accounting that rounds, floors or skips a charge
+5. Live vs test keys, tenant scoping, secrets in argv/URL/env
+
+## Tiers
+
+- **Tier 0 docs:** CI + one Grok round
+- **Tier 1 code:** Gate 0 + three-LLM gate
+- **Tier 2** (auth, money/Stripe, customer data, AI runtime, DB migrations, write-SSM): Gate 0 + three-LLM gate + one Codex check posted only from Moe's GitHub account + required tests for lenses 1–3 + read-only checks before and after deploy
+
+## Rounds
+
+Round 1 both reviewers see the full diff; fix rounds are delta-only with one reviewer; full re-review only if the fix exceeds 150 changed lines or touches a new Tier 2 area; at most two fix rounds, then stop and split; Medium/Low leftovers become required tests; PR cap about 400 changed lines.
+
+A fix commit made under the round rules is re-verified by the delta-only fix review on that new head; any other new commit voids prior reviews and needs the full two-reviewer gate.
+
+## Kill switch
+
+One Critical in production or two Highs escaping in 30 days puts that area back on the five-seat gate.
+
+Under the kill switch only, for the affected area, the retired seats are re-enabled (Seat 4 grok-4.7-high, Seat 5 cursor-grok-4.6-medium) with the full five-seat roster and packet in moe-os `templates/FIVE_LLM_CODE_VERIFICATION.md` (Kill-switch use only section); outside the kill switch they stay retired.
+
+## Routing
+
+Plan-included models only (Composer and Grok families; 3rd-party models in Cursor not included); Fast OFF and Max OFF everywhere; grok-4.7-high only for server/SSM work after Moe's named full SHA; any agent chat over 100K context restarts as a fresh task with a one-page handoff.
+
+Moe merges and deploys only on a named full SHA.
