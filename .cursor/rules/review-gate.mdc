@@ -15,6 +15,8 @@ alwaysApply: true
 
 Reviewers see only the diff, the threat model and the risk lenses; the author's chat never reviews; never use grok-4.7-high or cursor-grok-4.6-medium as a review seat.
 
+Composer is Author and Reviewer A only; Reviewer B is grok-4.7-medium only (second model family).
+
 ## Risk lenses
 
 1. Can it run twice or race
@@ -33,9 +35,13 @@ Reviewers see only the diff, the threat model and the risk lenses; the author's 
 
 Round 1 both reviewers see the full diff; fix rounds are delta-only with one reviewer; full re-review only if the fix exceeds 150 changed lines or touches a new Tier 2 area; at most two fix rounds, then stop and split; Medium/Low leftovers become required tests; PR cap about 400 changed lines.
 
+A fix commit made under the round rules is re-verified by the delta-only fix review on that new head; any other new commit voids prior reviews and needs the full two-reviewer gate.
+
 ## Kill switch
 
 One Critical in production or two Highs escaping in 30 days puts that area back on the five-seat gate.
+
+Under the kill switch only, for the affected area, the retired seats are re-enabled (Seat 4 grok-4.7-high, Seat 5 cursor-grok-4.6-medium) with the full five-seat roster and packet in moe-os `templates/FIVE_LLM_CODE_VERIFICATION.md` (Kill-switch use only section); outside the kill switch they stay retired.
 
 ## Routing
 
